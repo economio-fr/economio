@@ -238,7 +238,7 @@ function AnonymizeModal({ onClose }) {
       const block = isImg
         ? { type: "image",    source: { type: "base64", media_type: mime, data: base64 } }
         : { type: "document", source: { type: "base64", media_type: "application/pdf", data: base64 } };
-      const res = await fetch("https://api.anthropic.com/v1/messages", {
+      const res = await fetch("/api/claude", {
         method: "POST", headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           model: "claude-sonnet-4-20250514", max_tokens: 2000,
@@ -455,7 +455,7 @@ export default function EconomioApp() {
 
         setUploadStage("🤖 L'IA analyse ta facture...");
 
-        const res = await fetch("https://api.anthropic.com/v1/messages", {
+        const res = await fetch("/api/claude", {
           method: "POST", headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             model: "claude-sonnet-4-20250514", max_tokens: 1000,
@@ -534,7 +534,7 @@ Réponds UNIQUEMENT en JSON strict, sans markdown, sans backticks :
   "offers": [{ "provider":"...","name":"...","price":<n>,"highlight":"avantage principal","match":"pourquoi ça correspond","savings_year":<économie €>,"url":"https://..." }]
 }`;
     try {
-      const res = await fetch("https://api.anthropic.com/v1/messages", {
+      const res = await fetch("/api/claude", {
         method: "POST", headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ model: "claude-sonnet-4-20250514", max_tokens: 1500, messages: [{ role: "user", content: prompt }] }),
       });
