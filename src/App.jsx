@@ -241,7 +241,7 @@ function AnonymizeModal({ onClose }) {
       const res = await fetch("/api/claude", {
         method: "POST", headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          model: "claude-sonnet-4-20250514", max_tokens: 2000,
+          model: "claude-sonnet-4-6", max_tokens: 2000,
           messages: [{ role: "user", content: [block,
             { type: "text", text: `Tu es expert RGPD. Retranscris ce document en remplaçant TOUTES les données personnelles :
 - Nom/prénom → [NOM PRÉNOM]
@@ -458,7 +458,7 @@ export default function EconomioApp() {
         const res = await fetch("/api/claude", {
           method: "POST", headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            model: "claude-sonnet-4-20250514", max_tokens: 1000,
+            model: "claude-sonnet-4-6", max_tokens: 1000,
             messages: [{ role: "user", content: [block, {
               type: "text",
               text: `${maskInstruction}
@@ -536,7 +536,7 @@ Réponds UNIQUEMENT en JSON strict, sans markdown, sans backticks :
     try {
       const res = await fetch("/api/claude", {
         method: "POST", headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ model: "claude-sonnet-4-20250514", max_tokens: 1500, messages: [{ role: "user", content: prompt }] }),
+        body: JSON.stringify({ model: "claude-sonnet-4-6", max_tokens: 1500, messages: [{ role: "user", content: prompt }] }),
       });
       const data = await res.json();
       const text = data.content?.map(b => b.text || "").join("") || "";
