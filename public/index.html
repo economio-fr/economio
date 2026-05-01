@@ -18,6 +18,44 @@
       @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
       @keyframes shimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
       @keyframes pulse { 0%, 100% { box-shadow: 0 0 0 0 rgba(0, 200, 255, 0.4); } 50% { box-shadow: 0 0 0 12px rgba(0, 200, 255, 0); } }
+      @keyframes bounce {
+        0%, 100% { transform: translateY(0); }
+        25% { transform: translateY(-6px); }
+        50% { transform: translateY(0); }
+        75% { transform: translateY(-3px); }
+      }
+      @keyframes wiggle {
+        0%, 100% { transform: scale(1) rotate(0deg); }
+        25% { transform: scale(1.03) rotate(-1deg); }
+        75% { transform: scale(1.03) rotate(1deg); }
+      }
+      @keyframes confettiFall {
+        0% { transform: translateY(-100vh) rotate(0deg); opacity: 1; }
+        100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+      }
+      @keyframes glowPulse {
+        0%, 100% { box-shadow: 0 8px 32px rgba(0,200,255,0.4), 0 0 0 0 rgba(0,229,199,0.4); }
+        50% { box-shadow: 0 12px 48px rgba(0,200,255,0.6), 0 0 0 16px rgba(0,229,199,0); }
+      }
+      @keyframes scrollNotif {
+        0% { opacity: 0; transform: translateY(-30px) scale(0.9); }
+        15% { opacity: 1; transform: translateY(0) scale(1); }
+        85% { opacity: 1; transform: translateY(0) scale(1); }
+        100% { opacity: 0; transform: translateY(-10px) scale(0.95); }
+      }
+      @keyframes shake {
+        0%, 100% { transform: translateX(0); }
+        25% { transform: translateX(-2px); }
+        75% { transform: translateX(2px); }
+      }
+      /* Mobile responsiveness */
+      @media (max-width: 600px) {
+        .nav-label { display: none !important; }
+        .hero-title { font-size: 32px !important; letter-spacing: -1px !important; }
+        .hero-amount { font-size: 64px !important; letter-spacing: -2px !important; }
+        .form-fields-grid { grid-template-columns: 1fr !important; }
+        .stats-row-grid { gap: 8px !important; padding: 14px 12px !important; }
+      }
       ::selection { background: rgba(0, 200, 255, 0.3); }
       input, select, button, textarea { font-family: inherit; }
       a { color: inherit; }

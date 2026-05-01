@@ -107,7 +107,7 @@ const CATEGORY_FORMS = {
     { key: "price",       label: "Prix mensuel (€)",        type: "number", placeholder: "Ex : 45" },
     { key: "cover_level", label: "Niveau de couverture",    type: "select", options: ["Tiers simple","Tiers étendu","Tous risques"] },
     { key: "vehicle_age", label: "Âge du véhicule",        type: "select", options: ["Moins de 2 ans","2 – 5 ans","5 – 10 ans","Plus de 10 ans"] },
-    { key: "usage",       label: "Usage principal",         type: "select", options: ["Domicile – travail","Loisirs","Professionnel"] },
+    { key: "usage",       label: "Usage principal",         type: "select", options: ["Privé (loisirs uniquement)","Privé + trajets travail","Domicile – travail","Professionnel","Tous usages"] },
     { key: "km_year",     label: "Km / an",                 type: "select", options: ["Moins de 5 000 km","5 000 – 10 000 km","10 000 – 20 000 km","Plus de 20 000 km"] },
     { key: "bonus",       label: "Coefficient bonus/malus", type: "select", options: ["0.50 (max bonus)","0.60 – 0.70","0.80 – 0.90","1.00 (neutre)","Malus > 1"] },
   ],
@@ -391,6 +391,172 @@ function DashboardModal({ onClose, savings, onClear }) {
 // ═══════════════════════════════════════════════════════════════════════════════
 // MAIN APP
 // ═══════════════════════════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════════════════════════════
+// 🎉 CONFETTI ANIMATION (version spectaculaire)
+// ═══════════════════════════════════════════════════════════════════════════════
+function Confetti() {
+  const colors = ["#00C8FF", "#00E5C7", "#7B5BFF", "#FFA500", "#FF5670", "#FFD93D", "#FF6BCB", "#A0FF6B"];
+  const emojis = ["💰", "💸", "🎉", "✨", "💎", "⚡", "🪙"];
+
+  // Confetti de chute classique (depuis le haut)
+  const fallingPieces = Array.from({ length: 100 }, (_, i) => ({
+    id: `fall-${i}`,
+    left: Math.random() * 100,
+    delay: Math.random() * 1.2,
+    duration: 3 + Math.random() * 3,
+    color: colors[Math.floor(Math.random() * colors.length)],
+    size: 6 + Math.random() * 10,
+    shape: ["square", "circle", "rect"][Math.floor(Math.random() * 3)],
+    rotateStart: Math.random() * 360,
+    rotateEnd: 720 + Math.random() * 720,
+    swing: Math.random() * 200 - 100,
+  }));
+
+  // Explosion depuis le centre (effet wow au début)
+  const burstPieces = Array.from({ length: 30 }, (_, i) => {
+    const angle = (i / 30) * Math.PI * 2;
+    const distance = 250 + Math.random() * 200;
+    return {
+      id: `burst-${i}`,
+      angle,
+      distance,
+      delay: Math.random() * 0.2,
+      duration: 1.2 + Math.random() * 0.5,
+      color: colors[Math.floor(Math.random() * colors.length)],
+      size: 8 + Math.random() * 8,
+      tx: Math.cos(angle) * distance,
+      ty: Math.sin(angle) * distance,
+    };
+  });
+
+  // Emojis qui montent depuis le bas
+  const floatingEmojis = Array.from({ length: 12 }, (_, i) => ({
+    id: `emoji-${i}`,
+    left: 5 + Math.random() * 90,
+    delay: Math.random() * 1.5,
+    duration: 2.5 + Math.random() * 1.5,
+    emoji: emojis[Math.floor(Math.random() * emojis.length)],
+    size: 24 + Math.random() * 16,
+  }));
+
+  return (
+    <>
+      <style>{`
+        @keyframes confettiFallSwing {
+          0% {
+            transform: translate(0, -100vh) rotate(var(--r-start));
+            opacity: 1;
+          }
+          50% {
+            transform: translate(var(--swing), 0vh) rotate(calc(var(--r-end) * 0.5));
+            opacity: 1;
+          }
+          100% {
+            transform: translate(calc(var(--swing) * 0.5), 110vh) rotate(var(--r-end));
+            opacity: 0;
+          }
+        }
+        @keyframes confettiBurst {
+          0% {
+            transform: translate(0, 0) scale(0);
+            opacity: 1;
+          }
+          30% {
+            transform: translate(calc(var(--tx) * 0.5), calc(var(--ty) * 0.5)) scale(1);
+            opacity: 1;
+          }
+          100% {
+            transform: translate(var(--tx), calc(var(--ty) + 100px)) scale(0.5) rotate(360deg);
+            opacity: 0;
+          }
+        }
+        @keyframes emojiFloat {
+          0% {
+            transform: translateY(100vh) scale(0.5) rotate(0deg);
+            opacity: 0;
+          }
+          15% {
+            opacity: 1;
+            transform: translateY(80vh) scale(1) rotate(20deg);
+          }
+          85% {
+            opacity: 1;
+            transform: translateY(20vh) scale(1.1) rotate(-10deg);
+          }
+          100% {
+            transform: translateY(-20vh) scale(0.8) rotate(40deg);
+            opacity: 0;
+          }
+        }
+      `}</style>
+
+      <div style={{ position: "fixed", inset: 0, zIndex: 9999, pointerEvents: "none", overflow: "hidden" }}>
+
+        {/* Explosion centrale */}
+        {burstPieces.map(p => (
+          <div
+            key={p.id}
+            style={{
+              position: "absolute",
+              top: "40%",
+              left: "50%",
+              width: p.size,
+              height: p.size,
+              background: p.color,
+              borderRadius: "50%",
+              "--tx": `${p.tx}px`,
+              "--ty": `${p.ty}px`,
+              animation: `confettiBurst ${p.duration}s cubic-bezier(0.15, 0.5, 0.35, 1) ${p.delay}s forwards`,
+              boxShadow: `0 0 12px ${p.color}88`,
+            }}
+          />
+        ))}
+
+        {/* Confettis qui tombent en se balançant */}
+        {fallingPieces.map(p => (
+          <div
+            key={p.id}
+            style={{
+              position: "absolute",
+              top: 0,
+              left: `${p.left}%`,
+              width: p.shape === "rect" ? p.size * 0.5 : p.size,
+              height: p.shape === "rect" ? p.size * 1.5 : p.size,
+              background: p.color,
+              borderRadius: p.shape === "circle" ? "50%" : p.shape === "rect" ? "2px" : "3px",
+              "--swing": `${p.swing}px`,
+              "--r-start": `${p.rotateStart}deg`,
+              "--r-end": `${p.rotateEnd}deg`,
+              animation: `confettiFallSwing ${p.duration}s linear ${p.delay}s forwards`,
+              boxShadow: `0 0 8px ${p.color}66`,
+            }}
+          />
+        ))}
+
+        {/* Emojis qui flottent */}
+        {floatingEmojis.map(p => (
+          <div
+            key={p.id}
+            style={{
+              position: "absolute",
+              bottom: 0,
+              left: `${p.left}%`,
+              fontSize: p.size,
+              animation: `emojiFloat ${p.duration}s ease-in-out ${p.delay}s forwards`,
+              filter: "drop-shadow(0 4px 12px rgba(0,200,255,0.4))",
+            }}
+          >
+            {p.emoji}
+          </div>
+        ))}
+      </div>
+    </>
+  );
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// 🚀 MAIN APP
+// ═══════════════════════════════════════════════════════════════════════════════
 export default function EconomioApp() {
   const [step, setStep]             = useState("home");
   const [category, setCategory]     = useState(null);
@@ -407,6 +573,8 @@ export default function EconomioApp() {
   const [maskBeforeUpload, setMaskBeforeUpload] = useState(true);
   const [uploadProcessing, setUploadProcessing] = useState(false);
   const [uploadStage, setUploadStage] = useState("");
+  const [showUploadSuccess, setShowUploadSuccess] = useState(false);
+  const [showConfetti, setShowConfetti] = useState(false);
 
   const cat    = category ? CATEGORY_LABELS[category] : null;
   const fields = category ? CATEGORY_FORMS[category] : [];
@@ -427,7 +595,16 @@ export default function EconomioApp() {
   }, []);
 
   const setField = (k, v) => setFormData(f => ({ ...f, [k]: v }));
-  const formValid = () => !!category && fields.filter(f => f.key === "provider" || f.key === "price").every(f => formData[f.key]);
+  const formValid = () => {
+    if (!category) return false;
+    return fields.filter(f => f.key === "provider" || f.key === "price").every(f => {
+      const v = formData[f.key];
+      if (!v) return false;
+      // Reject empty custom values (just "__custom__" with nothing after)
+      if (typeof v === "string" && v === "__custom__") return false;
+      return true;
+    });
+  };
 
   // ── Upload bill: extract data with AI and pre-fill form ───────────────────
   const handleBillUpload = async (file) => {
@@ -490,7 +667,17 @@ Si tu ne trouves pas une info, mets null.`
         });
         setFormData(f => ({ ...f, ...cleaned }));
 
-        setTimeout(() => setUploadProcessing(false), 800);
+        setTimeout(() => {
+          setUploadProcessing(false);
+          // Show success notification
+          setShowUploadSuccess(true);
+          // Smooth scroll to the form fields
+          setTimeout(() => {
+            document.getElementById("form-fields-section")?.scrollIntoView({ behavior: "smooth", block: "start" });
+          }, 100);
+          // Auto-hide notification after 4s
+          setTimeout(() => setShowUploadSuccess(false), 4000);
+        }, 800);
       };
       reader.readAsDataURL(file);
     } catch {
@@ -523,7 +710,13 @@ Si tu ne trouves pas une info, mets null.`
     setStep("analyzing"); setLoadStep(0);
     const t1 = setTimeout(() => setLoadStep(1), 1200);
     const t2 = setTimeout(() => setLoadStep(2), 2600);
-    const summary = fields.map(f => `${f.label}: ${formData[f.key] || "non renseigné"}`).join("\n");
+    const summary = fields.map(f => {
+      let val = formData[f.key] || "non renseigné";
+      if (typeof val === "string" && val.startsWith("__custom__")) {
+        val = val.replace("__custom__", "") || "non renseigné";
+      }
+      return `${f.label}: ${val}`;
+    }).join("\n");
     const prompt = `Tu es expert en comparaison d'offres françaises. L'utilisateur a un contrat "${cat.label}" :
 ${summary}
 
@@ -549,7 +742,10 @@ Réponds UNIQUEMENT en JSON strict, sans markdown, sans backticks :
       setOffers([]);
     }
     setStep("results");
-    setTimeout(() => setShowSurvey(true), 3000);
+    // Trigger confetti animation
+    setShowConfetti(true);
+    setTimeout(() => setShowConfetti(false), 6000);
+    setTimeout(() => setShowSurvey(true), 5000);
   };
 
   const reset = () => {
@@ -572,6 +768,9 @@ Réponds UNIQUEMENT en JSON strict, sans markdown, sans backticks :
       {showAnon   && <AnonymizeModal onClose={() => setShowAnon(false)} />}
       {showDash   && <DashboardModal onClose={() => setShowDash(false)} savings={savedSavings} onClear={clearSavings} />}
 
+      {/* Confetti animation */}
+      {showConfetti && <Confetti />}
+
       {/* Floating WhatsApp */}
       <a
         href={`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent("Hello Économio ! J'ai une question 👋")}`}
@@ -592,11 +791,11 @@ Réponds UNIQUEMENT en JSON strict, sans markdown, sans backticks :
           </div>
           <nav style={S.nav}>
             <button style={S.navBtn} onClick={() => setShowDash(true)}>
-              📊 <span style={S.navLabel}>Mon dashboard</span>
+              📊 <span className="nav-label" style={S.navLabel}>Mon dashboard</span>
               {savedSavings.length > 0 && <span style={S.navDot}>{savedSavings.length}</span>}
             </button>
             <button style={S.anonBtn} onClick={() => setShowAnon(true)}>
-              🔒 <span style={S.navLabel}>Anonymiser</span>
+              🔒 <span className="nav-label" style={S.navLabel}>Anonymiser</span>
             </button>
             {step !== "home" && <button style={S.backBtn} onClick={reset}>← Recommencer</button>}
           </nav>
@@ -613,16 +812,21 @@ Réponds UNIQUEMENT en JSON strict, sans markdown, sans backticks :
               <div style={S.heroBadge}>
                 <span style={S.pulseDot}></span> 🤖 Propulsé par l'IA
               </div>
-              <h1 style={S.heroTitle}>
+              <h1 className="hero-title" style={S.heroTitle}>
                 <span>Économise jusqu'à</span>
-                <span style={S.heroAmount}>576€</span>
+                <span className="hero-amount" style={S.heroAmount}>576€</span>
                 <span>par an sur tes factures</span>
               </h1>
               <p style={S.heroSub}>
                 Décris ton contrat actuel, l'IA scanne le marché en 2 minutes et te dégote les meilleures offres adaptées à tes besoins.<br />
                 <strong style={{ color: "#00E5C7" }}>Aucune carte bancaire. Aucun blabla.</strong>
               </p>
-              <button style={S.ctaPrimary} onClick={scrollToCategories}>
+              <button
+                style={{ ...S.ctaPrimary, animation: "glowPulse 2.5s ease-in-out infinite" }}
+                onClick={scrollToCategories}
+                onMouseEnter={e => e.currentTarget.style.transform = "scale(1.05)"}
+                onMouseLeave={e => e.currentTarget.style.transform = "scale(1)"}
+              >
                 🚀 Lance ton analyse gratuite
               </button>
               <div style={S.heroProof}>
@@ -645,8 +849,18 @@ Réponds UNIQUEMENT en JSON strict, sans markdown, sans backticks :
               <div style={S.catGrid}>
                 {Object.entries(CATEGORY_LABELS).map(([key, val]) => (
                   <button key={key} style={S.catCard}
-                    onMouseEnter={e => { e.currentTarget.style.borderColor = val.color; e.currentTarget.style.background = "rgba(0,200,255,0.06)"; e.currentTarget.style.transform = "translateY(-3px)"; }}
-                    onMouseLeave={e => { e.currentTarget.style.borderColor = "rgba(255,255,255,0.08)"; e.currentTarget.style.background = "rgba(255,255,255,0.03)"; e.currentTarget.style.transform = "translateY(0)"; }}
+                    onMouseEnter={e => {
+                      e.currentTarget.style.borderColor = val.color;
+                      e.currentTarget.style.background = `${val.color}11`;
+                      e.currentTarget.style.transform = "translateY(-4px) scale(1.02)";
+                      e.currentTarget.style.boxShadow = `0 12px 32px ${val.color}33`;
+                    }}
+                    onMouseLeave={e => {
+                      e.currentTarget.style.borderColor = "rgba(255,255,255,0.08)";
+                      e.currentTarget.style.background = "rgba(255,255,255,0.03)";
+                      e.currentTarget.style.transform = "translateY(0) scale(1)";
+                      e.currentTarget.style.boxShadow = "none";
+                    }}
                     onClick={() => { setCategory(key); setStep("form"); window.scrollTo({ top: 0, behavior: "smooth" }); }}
                   >
                     <span style={{ ...S.catIconBox, background: `${val.color}22`, color: val.color }}>{val.icon}</span>
@@ -755,22 +969,26 @@ Réponds UNIQUEMENT en JSON strict, sans markdown, sans backticks :
         {step === "form" && cat && (
           <div style={S.formWrap}>
             <div style={{ textAlign: "center", marginBottom: 32 }}>
-              <span style={{ ...S.catIconBox, background: `${cat.color}22`, color: cat.color, width: 64, height: 64, fontSize: 32, display: "inline-flex" }}>{cat.icon}</span>
+              <span style={{ ...S.catIconBox, background: `${cat.color}22`, color: cat.color, width: 72, height: 72, fontSize: 36, display: "inline-flex", animation: "float 3s ease-in-out infinite" }}>{cat.icon}</span>
               <h2 style={S.formTitle}>{cat.label}</h2>
-              <p style={{ color: "#94A3C7", fontSize: 15, margin: 0 }}>Renseigne ton contrat actuel pour une comparaison ultra-précise</p>
+              <p style={{ color: "#94A3C7", fontSize: 15, margin: "8px 0 0", maxWidth: 480, marginLeft: "auto", marginRight: "auto", lineHeight: 1.6 }}>
+                Deux options pour commencer : <strong style={{ color: "#7BFFE5" }}>uploade ta facture</strong> (l'IA fait le travail) ou <strong style={{ color: "#7BE5FF" }}>remplis à la main</strong>.
+              </p>
+            </div>
+
+            {/* Step 1 header */}
+            <div style={S.formSection}>
+              <div style={S.formSectionHeader}>
+                <div style={S.formSectionStep}>1</div>
+                <div>
+                  <div style={S.formSectionTitle}>⚡ Upload express (recommandé)</div>
+                  <div style={S.formSectionSub}>L'IA lit ta facture en 5 secondes et pré-remplit tout pour toi</div>
+                </div>
+              </div>
             </div>
 
             {/* Upload express */}
             <div style={S.uploadCard}>
-              <div style={S.uploadCardHeader}>
-                <div>
-                  <div style={S.uploadCardTag}>⚡ Upload express</div>
-                  <h3 style={S.uploadCardTitle}>Gagne du temps : envoie ta facture</h3>
-                  <p style={S.uploadCardSub}>L'IA lit ta facture et pré-remplit le formulaire en 5 secondes.</p>
-                </div>
-                <div style={S.uploadCardIcon}>📄</div>
-              </div>
-
               <div style={S.privacyChoice}>
                 <label style={{ ...S.privacyOption, ...(maskBeforeUpload ? S.privacyOptionActive : {}) }}>
                   <input type="radio" name="mask" checked={maskBeforeUpload} onChange={() => setMaskBeforeUpload(true)} style={{ display: "none" }} />
@@ -806,27 +1024,98 @@ Réponds UNIQUEMENT en JSON strict, sans markdown, sans backticks :
               )}
             </div>
 
-            <div style={S.orDivider}><span>OU REMPLIS MANUELLEMENT</span></div>
-
-            <div style={S.fieldsGrid}>
-              {fields.map(f => (
-                <div key={f.key} style={S.fieldGroup}>
-                  <label style={S.fieldLabel}>{f.label}</label>
-                  {f.type === "select" ? (
-                    <select style={S.select} value={formData[f.key] || ""} onChange={e => setField(f.key, e.target.value)}>
-                      <option value="">-- Choisir --</option>
-                      {f.options.map(o => <option key={o} value={o}>{o}</option>)}
-                    </select>
-                  ) : (
-                    <div style={{ position: "relative" }}>
-                      <input type="number" style={S.input} placeholder={f.placeholder} value={formData[f.key] || ""} onChange={e => setField(f.key, e.target.value)} />
-                      <span style={S.suffix}>€/mois</span>
-                    </div>
-                  )}
+            {/* Notification "infos retransmises" */}
+            {showUploadSuccess && (
+              <div style={S.successNotif}>
+                <span style={{ fontSize: 24 }}>✅</span>
+                <div>
+                  <div style={{ fontWeight: 800, fontSize: 15 }}>Les informations ont bien été retransmises !</div>
+                  <div style={{ fontSize: 13, color: "#94A3C7", marginTop: 2 }}>Vérifie les champs ci-dessous et clique sur Analyser 👇</div>
                 </div>
-              ))}
+              </div>
+            )}
+
+            {/* Better section divider */}
+            <div id="form-fields-section" style={S.formSection}>
+              <div style={S.formSectionHeader}>
+                <div style={S.formSectionStep}>2</div>
+                <div>
+                  <div style={S.formSectionTitle}>📝 Vérifie tes informations</div>
+                  <div style={S.formSectionSub}>Modifie ce qui ne correspond pas, ou remplis manuellement si tu n'as pas uploadé de facture</div>
+                </div>
+              </div>
             </div>
-            <button style={{ ...S.analyzeBtn, background: formValid() ? `linear-gradient(135deg, ${cat.color}, #00E5C7)` : "#1A1F35", opacity: formValid() ? 1 : 0.55, cursor: formValid() ? "pointer" : "not-allowed" }} disabled={!formValid()} onClick={analyze}>
+
+            <div style={S.fieldsGrid} className="form-fields-grid">
+              {fields.map(f => {
+                const currentValue = formData[f.key] || "";
+                const isCustom = f.type === "select" && currentValue.startsWith("__custom__");
+                const customValue = isCustom ? currentValue.replace("__custom__", "") : "";
+
+                return (
+                  <div key={f.key} style={S.fieldGroup}>
+                    <label style={S.fieldLabel}>{f.label}</label>
+                    {f.type === "select" ? (
+                      <>
+                        <select
+                          style={S.select}
+                          value={isCustom ? "__custom__" : currentValue}
+                          onChange={e => {
+                            if (e.target.value === "__custom__") {
+                              setField(f.key, "__custom__");
+                            } else {
+                              setField(f.key, e.target.value);
+                            }
+                          }}
+                        >
+                          <option value="">-- Choisir --</option>
+                          {f.options.map(o => <option key={o} value={o}>{o}</option>)}
+                          <option value="__custom__">✍️ Autre (saisir manuellement)</option>
+                        </select>
+                        {isCustom && (
+                          <input
+                            type="text"
+                            style={{ ...S.input, marginTop: 8, paddingRight: 14 }}
+                            placeholder="Saisis ta valeur ici..."
+                            value={customValue}
+                            onChange={e => setField(f.key, "__custom__" + e.target.value)}
+                            autoFocus
+                          />
+                        )}
+                      </>
+                    ) : (
+                      <div style={{ position: "relative" }}>
+                        <input type="number" style={S.input} placeholder={f.placeholder} value={currentValue} onChange={e => setField(f.key, e.target.value)} />
+                        <span style={S.suffix}>€/mois</span>
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+            <div style={{ ...S.formSection, marginTop: 24 }}>
+              <div style={S.formSectionHeader}>
+                <div style={S.formSectionStep}>3</div>
+                <div>
+                  <div style={S.formSectionTitle}>🚀 Lance l'analyse</div>
+                  <div style={S.formSectionSub}>L'IA va comparer ton contrat avec toutes les offres du marché</div>
+                </div>
+              </div>
+            </div>
+
+            <button
+              style={{
+                ...S.analyzeBtn,
+                background: formValid() ? `linear-gradient(135deg, ${cat.color}, #00E5C7)` : "#1A1F35",
+                opacity: formValid() ? 1 : 0.55,
+                cursor: formValid() ? "pointer" : "not-allowed",
+                animation: formValid() ? "glowPulse 2s ease-in-out infinite, bounce 2s ease-in-out infinite" : "none",
+              }}
+              disabled={!formValid()}
+              onClick={analyze}
+              onMouseEnter={e => { if (formValid()) { e.currentTarget.style.transform = "scale(1.02)"; } }}
+              onMouseLeave={e => { if (formValid()) { e.currentTarget.style.transform = "scale(1)"; } }}
+            >
               🔍 Analyser et comparer →
             </button>
             {!formValid() && <p style={{ textAlign: "center", color: "#4B5673", fontSize: 13, marginTop: 8 }}>Renseigne au minimum l'opérateur et le prix mensuel</p>}
@@ -944,14 +1233,14 @@ const S = {
   bgGrid:      { position: "fixed", inset: 0, zIndex: 0, opacity: 0.4, backgroundImage: "linear-gradient(rgba(0,200,255,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(0,200,255,0.04) 1px, transparent 1px)", backgroundSize: "60px 60px", pointerEvents: "none" },
   header:      { position: "sticky", top: 0, zIndex: 50, background: "rgba(5,8,16,0.6)", backdropFilter: "blur(12px)", transition: "all .3s", borderBottom: "1px solid transparent" },
   headerScrolled: { background: "rgba(5,8,16,0.92)", borderBottom: "1px solid rgba(0,200,255,0.12)" },
-  headerInner: { maxWidth: 1100, margin: "0 auto", display: "flex", alignItems: "center", justifyContent: "space-between", padding: "14px 24px" },
+  headerInner: { maxWidth: 1100, margin: "0 auto", display: "flex", alignItems: "center", justifyContent: "space-between", padding: "14px 16px", gap: 8, flexWrap: "wrap" },
   logo:        { display: "flex", alignItems: "center", gap: 10, cursor: "pointer" },
   logoMark:    { width: 36, height: 36, borderRadius: 10, background: "linear-gradient(135deg,#00C8FF,#00E5C7)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 18, boxShadow: "0 4px 16px rgba(0,200,255,0.4)" },
   logoTxt:     { fontFamily: "'Cabinet Grotesk',sans-serif", fontSize: 22, fontWeight: 900, letterSpacing: "-0.5px", background: "linear-gradient(135deg,#00C8FF,#00E5C7)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" },
   nav:         { display: "flex", alignItems: "center", gap: 8 },
-  navBtn:      { background: "rgba(0,200,255,0.08)", border: "1px solid rgba(0,200,255,0.2)", color: "#7BE5FF", borderRadius: 10, padding: "8px 14px", cursor: "pointer", fontSize: 13, fontWeight: 600, position: "relative", display: "flex", alignItems: "center", gap: 6 },
-  anonBtn:     { background: "rgba(0,229,199,0.08)", border: "1px solid rgba(0,229,199,0.2)", color: "#7BFFE5", borderRadius: 10, padding: "8px 14px", cursor: "pointer", fontSize: 13, fontWeight: 600, display: "flex", alignItems: "center", gap: 6 },
-  backBtn:     { background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)", color: "#94A3C7", borderRadius: 10, padding: "8px 14px", cursor: "pointer", fontSize: 13 },
+  navBtn:      { background: "rgba(0,200,255,0.08)", border: "1px solid rgba(0,200,255,0.2)", color: "#7BE5FF", borderRadius: 10, padding: "8px 12px", cursor: "pointer", fontSize: 13, fontWeight: 600, position: "relative", display: "flex", alignItems: "center", gap: 6, whiteSpace: "nowrap" },
+  anonBtn:     { background: "rgba(0,229,199,0.08)", border: "1px solid rgba(0,229,199,0.2)", color: "#7BFFE5", borderRadius: 10, padding: "8px 12px", cursor: "pointer", fontSize: 13, fontWeight: 600, display: "flex", alignItems: "center", gap: 6, whiteSpace: "nowrap" },
+  backBtn:     { background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)", color: "#94A3C7", borderRadius: 10, padding: "8px 12px", cursor: "pointer", fontSize: 13, whiteSpace: "nowrap" },
   navLabel:    { display: "inline-block" },
   navDot:      { background: "#FF5670", color: "white", fontSize: 11, fontWeight: 800, borderRadius: 100, padding: "1px 7px", marginLeft: 4 },
   main:        { position: "relative", zIndex: 1, maxWidth: 1100, margin: "0 auto", padding: "0 20px 60px" },
@@ -963,7 +1252,7 @@ const S = {
   heroTitle:   { fontFamily: "'Cabinet Grotesk',sans-serif", fontSize: "clamp(38px,7vw,72px)", fontWeight: 900, lineHeight: 1.0, letterSpacing: "-2.5px", margin: "0 0 20px", display: "flex", flexDirection: "column", alignItems: "center", gap: 4 },
   heroAmount:  { background: "linear-gradient(135deg,#00C8FF 0%,#00E5C7 100%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", fontSize: "clamp(72px,12vw,140px)", lineHeight: 0.9, letterSpacing: "-4px" },
   heroSub:     { fontSize: 17, color: "#94A3C7", maxWidth: 540, margin: "0 auto 32px", lineHeight: 1.6 },
-  ctaPrimary:  { background: "linear-gradient(135deg,#00C8FF 0%,#00E5C7 100%)", color: "#050810", border: "none", borderRadius: 14, padding: "16px 32px", fontSize: 17, fontWeight: 800, cursor: "pointer", letterSpacing: "-0.3px", boxShadow: "0 8px 32px rgba(0,200,255,0.4)", transition: "transform .2s" },
+  ctaPrimary:  { background: "linear-gradient(135deg,#00C8FF 0%,#00E5C7 100%)", color: "#050810", border: "none", borderRadius: 14, padding: "16px 32px", fontSize: 17, fontWeight: 800, cursor: "pointer", letterSpacing: "-0.3px", boxShadow: "0 8px 32px rgba(0,200,255,0.4)", transition: "transform .25s cubic-bezier(0.4,0,0.2,1)" },
   heroProof:   { marginTop: 32, display: "inline-flex", alignItems: "center", gap: 12 },
   avatars:     { display: "flex" },
   avatarMini:  { width: 32, height: 32, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 13, fontWeight: 800, color: "white", border: "2px solid #050810" },
@@ -978,7 +1267,7 @@ const S = {
 
   // Categories
   catGrid:     { display: "grid", gridTemplateColumns: "repeat(auto-fill,minmax(220px,1fr))", gap: 14 },
-  catCard:     { display: "flex", alignItems: "center", gap: 14, background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 14, padding: "18px 20px", cursor: "pointer", color: "#E8F1FF", textAlign: "left", transition: "all .25s", fontSize: 15 },
+  catCard:     { display: "flex", alignItems: "center", gap: 14, background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 14, padding: "18px 20px", cursor: "pointer", color: "#E8F1FF", textAlign: "left", transition: "transform .3s cubic-bezier(0.4,0,0.2,1), box-shadow .3s, background .3s, border-color .3s", fontSize: 15 },
   catIconBox:  { width: 40, height: 40, borderRadius: 10, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 20, flexShrink: 0 },
 
   // Steps
@@ -1012,32 +1301,58 @@ const S = {
   footer:      { textAlign: "center", padding: "40px 0", borderTop: "1px solid rgba(255,255,255,0.05)", marginTop: 40 },
 
   // Form
-  formWrap:    { maxWidth: 620, margin: "0 auto", padding: "32px 0", animation: "fadeUp .5s ease" },
+  formWrap:    { maxWidth: 620, margin: "0 auto", padding: "32px 16px", animation: "fadeUp .5s ease", display: "flex", flexDirection: "column", alignItems: "stretch" },
   formTitle:   { fontFamily: "'Cabinet Grotesk',sans-serif", fontSize: 30, fontWeight: 900, margin: "12px 0 6px", letterSpacing: "-0.8px" },
 
+  // Form section steps (intuitive)
+  formSection: { marginBottom: 14, width: "100%", boxSizing: "border-box" },
+  formSectionHeader: { display: "flex", alignItems: "center", gap: 14 },
+  formSectionStep: {
+    width: 36, height: 36, borderRadius: "50%",
+    background: "linear-gradient(135deg,#00C8FF,#00E5C7)",
+    display: "flex", alignItems: "center", justifyContent: "center",
+    fontFamily: "'Cabinet Grotesk',sans-serif",
+    fontSize: 17, fontWeight: 900, color: "#050810", flexShrink: 0,
+    boxShadow: "0 4px 16px rgba(0,200,255,0.3)",
+  },
+  formSectionTitle: { fontSize: 17, fontWeight: 800, color: "#E8F1FF", letterSpacing: "-0.2px" },
+  formSectionSub: { fontSize: 13, color: "#94A3C7", marginTop: 2 },
+
+  // Success notification banner
+  successNotif: {
+    display: "flex", alignItems: "center", gap: 14,
+    background: "linear-gradient(135deg,rgba(0,229,199,0.15),rgba(0,200,255,0.1))",
+    border: "1px solid rgba(0,229,199,0.4)",
+    borderRadius: 14, padding: "16px 18px", margin: "0 0 20px",
+    width: "100%", boxSizing: "border-box",
+    animation: "scrollNotif 4s ease-in-out forwards",
+    boxShadow: "0 8px 32px rgba(0,229,199,0.15)",
+  },
+
   // Upload express
-  uploadCard:  { background: "linear-gradient(135deg, rgba(0,200,255,0.08), rgba(0,229,199,0.05))", border: "1px solid rgba(0,200,255,0.2)", borderRadius: 16, padding: "20px", marginBottom: 24 },
+  // Upload express
+  uploadCard:  { background: "linear-gradient(135deg, rgba(0,200,255,0.08), rgba(0,229,199,0.05))", border: "1px solid rgba(0,200,255,0.2)", borderRadius: 16, padding: "20px", marginBottom: 28, width: "100%", boxSizing: "border-box" },
   uploadCardHeader: { display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 16, marginBottom: 16 },
   uploadCardTag: { display: "inline-block", fontSize: 11, fontWeight: 700, color: "#00C8FF", textTransform: "uppercase", letterSpacing: 1.2, marginBottom: 6 },
   uploadCardTitle: { fontSize: 16, fontWeight: 700, margin: "0 0 4px" },
   uploadCardSub: { fontSize: 13, color: "#94A3C7", margin: 0 },
   uploadCardIcon: { fontSize: 32, opacity: 0.8, animation: "float 3s ease-in-out infinite" },
   privacyChoice: { display: "flex", flexDirection: "column", gap: 8, marginBottom: 14 },
-  privacyOption: { display: "flex", alignItems: "flex-start", gap: 12, background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 10, padding: "12px 14px", cursor: "pointer", transition: "all .2s" },
+  privacyOption: { display: "flex", alignItems: "flex-start", gap: 12, background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 10, padding: "12px 14px", cursor: "pointer", transition: "all .2s", width: "100%", boxSizing: "border-box" },
   privacyOptionActive: { background: "rgba(0,200,255,0.08)", border: "1px solid rgba(0,200,255,0.4)" },
   radioCircle: { width: 20, height: 20, borderRadius: "50%", border: "2px solid rgba(255,255,255,0.2)", flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 11, fontWeight: 800, marginTop: 1 },
   radioCircleActive: { background: "linear-gradient(135deg,#00C8FF,#00E5C7)", border: "none", color: "#050810" },
-  uploadBtnLarge: { background: "linear-gradient(135deg,#00C8FF,#00E5C7)", color: "#050810", borderRadius: 12, padding: "14px", fontWeight: 800, fontSize: 14, transition: "transform .2s", border: "none" },
+  uploadBtnLarge: { width: "100%", background: "linear-gradient(135deg,#00C8FF,#00E5C7)", color: "#050810", borderRadius: 12, padding: "14px", fontWeight: 800, fontSize: 14, transition: "transform .2s", border: "none", boxSizing: "border-box" },
   uploadProcessing: { display: "flex", alignItems: "center", gap: 14, background: "rgba(255,255,255,0.04)", border: "1px solid rgba(0,200,255,0.2)", borderRadius: 12, padding: "14px 16px" },
   orDivider:   { textAlign: "center", margin: "16px 0", fontSize: 11, fontWeight: 700, color: "#4B5673", letterSpacing: 2 },
 
-  fieldsGrid:  { display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14, marginBottom: 16 },
+  fieldsGrid:  { display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14, marginBottom: 24, width: "100%", boxSizing: "border-box" },
   fieldGroup:  { display: "flex", flexDirection: "column", gap: 6 },
   fieldLabel:  { fontSize: 12, fontWeight: 600, color: "#94A3C7", textTransform: "uppercase", letterSpacing: 0.5 },
-  select:      { background: "#0F1426", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 10, padding: "12px 14px", color: "#E8F1FF", fontSize: 14, outline: "none", cursor: "pointer" },
+  select:      { width: "100%", background: "#0F1426", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 10, padding: "12px 14px", color: "#E8F1FF", fontSize: 14, outline: "none", cursor: "pointer", boxSizing: "border-box", fontFamily: "inherit" },
   input:       { width: "100%", background: "#0F1426", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 10, padding: "12px 60px 12px 14px", color: "#E8F1FF", fontSize: 14, outline: "none", boxSizing: "border-box" },
   suffix:      { position: "absolute", right: 14, top: "50%", transform: "translateY(-50%)", fontSize: 13, color: "#6B7B9C", pointerEvents: "none" },
-  analyzeBtn:  { width: "100%", color: "#050810", border: "none", borderRadius: 14, padding: "17px", fontSize: 16, fontWeight: 800, marginTop: 8, transition: "transform .2s" },
+  analyzeBtn:  { width: "100%", color: "#050810", border: "none", borderRadius: 14, padding: "17px", fontSize: 17, fontWeight: 900, marginTop: 8, transition: "transform .25s cubic-bezier(0.4,0,0.2,1)", letterSpacing: "-0.3px", boxSizing: "border-box", cursor: "pointer", fontFamily: "inherit" },
 
   // Analyzing
   analyzingWrap: { display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", minHeight: "60vh", gap: 16, textAlign: "center", position: "relative", padding: "40px 0" },
@@ -1050,7 +1365,7 @@ const S = {
   currentBadge: { fontSize: 11, fontWeight: 700, color: "#94A3C7", textTransform: "uppercase", letterSpacing: 1.2, display: "block", marginBottom: 14 },
   savingsBanner: { background: "linear-gradient(135deg,#00C8FF,#00E5C7)", color: "#050810", borderRadius: 14, padding: "18px 22px", fontSize: 16, textAlign: "center", fontWeight: 700, boxShadow: "0 8px 32px rgba(0,200,255,0.3)" },
   offerCard:   { background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 16, padding: "20px", position: "relative" },
-  offerCardBest: { background: "rgba(0,200,255,0.08)", border: "1px solid rgba(0,200,255,0.3)" },
+  offerCardBest: { background: "rgba(0,200,255,0.08)", border: "1px solid rgba(0,200,255,0.4)", boxShadow: "0 0 0 1px rgba(0,200,255,0.2), 0 8px 32px rgba(0,200,255,0.15)", animation: "wiggle 4s ease-in-out infinite" },
   bestBadge:   { position: "absolute", top: -12, left: 20, background: "linear-gradient(135deg,#00C8FF,#00E5C7)", color: "#050810", borderRadius: 100, padding: "4px 14px", fontSize: 11, fontWeight: 800 },
   offerLogo:   { width: 44, height: 44, borderRadius: 10, background: "rgba(255,255,255,0.1)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 13, fontWeight: 800, flexShrink: 0 },
   offerCTA:    { flex: 1, display: "block", textAlign: "center", background: "rgba(255,255,255,0.07)", border: "1px solid rgba(255,255,255,0.12)", color: "#E8F1FF", borderRadius: 10, padding: "12px", textDecoration: "none", fontSize: 14, fontWeight: 700 },
