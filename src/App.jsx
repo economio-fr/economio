@@ -392,6 +392,264 @@ function DashboardModal({ onClose, savings, onClear }) {
 // MAIN APP
 // ═══════════════════════════════════════════════════════════════════════════════
 // ═══════════════════════════════════════════════════════════════════════════════
+// ⚖️ LEGAL MODAL (Mentions, Privacy, CGU)
+// ═══════════════════════════════════════════════════════════════════════════════
+function LegalModal({ page, onClose }) {
+  if (!page) return null;
+
+  const content = {
+    mentions: {
+      title: "Mentions légales",
+      icon: "📜",
+      body: (
+        <>
+          <h3 style={L.h3}>1. Éditeur du site</h3>
+          <p style={L.p}>
+            Le site <strong>Économio</strong> est édité par :<br /><br />
+            <strong>[TON PRÉNOM NOM]</strong><br />
+            Auto-entrepreneur<br />
+            Adresse : [TON ADRESSE COMPLÈTE]<br />
+            Email : [TON EMAIL]<br />
+            SIRET : [TON NUMÉRO SIRET]<br />
+            N° TVA : Non assujetti à la TVA – Article 293 B du CGI
+          </p>
+
+          <h3 style={L.h3}>2. Directeur de la publication</h3>
+          <p style={L.p}>[TON PRÉNOM NOM]</p>
+
+          <h3 style={L.h3}>3. Hébergement du site</h3>
+          <p style={L.p}>
+            Vercel Inc.<br />
+            340 S Lemon Ave #4133<br />
+            Walnut, CA 91789, USA<br />
+            Site : https://vercel.com
+          </p>
+
+          <h3 style={L.h3}>4. Propriété intellectuelle</h3>
+          <p style={L.p}>
+            L'ensemble du contenu présent sur le site Économio (textes, logos, images, graphismes, code source) est protégé par le droit d'auteur. Toute reproduction, représentation, modification, publication ou adaptation totale ou partielle des éléments du site, quel que soit le moyen ou le procédé utilisé, est interdite sans l'autorisation écrite préalable de l'éditeur.
+          </p>
+
+          <h3 style={L.h3}>5. Liens d'affiliation</h3>
+          <p style={L.p}>
+            Économio est financé exclusivement par des commissions d'affiliation perçues lorsqu'un utilisateur souscrit à une offre via les liens présents sur le site. Ces commissions n'impactent en aucun cas le prix payé par l'utilisateur. La présence de liens d'affiliation est mentionnée explicitement sur les pages de résultats.
+          </p>
+
+          <h3 style={L.h3}>6. Limitation de responsabilité</h3>
+          <p style={L.p}>
+            Économio met tout en œuvre pour fournir des informations exactes et à jour. Cependant, les offres présentées peuvent évoluer rapidement. L'utilisateur est invité à vérifier les conditions de chaque offre directement sur le site du fournisseur avant toute souscription. Économio ne saurait être tenu responsable des décisions prises par les utilisateurs sur la base des informations fournies.
+          </p>
+
+          <h3 style={L.h3}>7. Contact</h3>
+          <p style={L.p}>
+            Pour toute question relative à ces mentions légales, vous pouvez nous contacter à : <strong>[TON EMAIL]</strong>
+          </p>
+        </>
+      ),
+    },
+    privacy: {
+      title: "Politique de confidentialité",
+      icon: "🔒",
+      body: (
+        <>
+          <h3 style={L.h3}>1. Responsable du traitement</h3>
+          <p style={L.p}>
+            Le responsable du traitement des données personnelles est :<br />
+            <strong>[TON PRÉNOM NOM]</strong>, auto-entrepreneur<br />
+            Email : <strong>[TON EMAIL]</strong>
+          </p>
+
+          <h3 style={L.h3}>2. Données collectées</h3>
+          <p style={L.p}>
+            Économio s'engage à collecter le minimum de données nécessaires :
+          </p>
+          <ul style={L.ul}>
+            <li>Caractéristiques du contrat (fournisseur, prix, options) — données techniques uniquement</li>
+            <li>Données de facture uploadée — analysées en temps réel par notre IA puis immédiatement supprimées</li>
+            <li>Réponses au questionnaire bêta (anonymes)</li>
+            <li>Données de navigation (Vercel Analytics, anonymisées et conformes RGPD)</li>
+          </ul>
+
+          <h3 style={L.h3}>3. Données NON collectées</h3>
+          <p style={L.p}>
+            Économio ne collecte <strong>jamais</strong> :
+          </p>
+          <ul style={L.ul}>
+            <li>Votre nom, adresse, téléphone</li>
+            <li>Vos coordonnées bancaires (IBAN, n° de carte)</li>
+            <li>Votre numéro client chez les opérateurs</li>
+            <li>Votre date de naissance</li>
+          </ul>
+          <p style={L.p}>
+            Notre outil d'anonymisation IA permet de masquer ces informations avant transmission.
+          </p>
+
+          <h3 style={L.h3}>4. Finalités du traitement</h3>
+          <ul style={L.ul}>
+            <li>Analyser votre contrat et recommander des alternatives</li>
+            <li>Améliorer notre service grâce aux retours utilisateurs</li>
+            <li>Mesurer l'audience du site (statistiques anonymes)</li>
+          </ul>
+
+          <h3 style={L.h3}>5. Durée de conservation</h3>
+          <p style={L.p}>
+            Les données de comparaison sont traitées en temps réel et <strong>ne sont pas stockées</strong>. Seul votre historique d'économies (si vous l'enregistrez) est conservé localement sur votre appareil et peut être supprimé à tout moment depuis le tableau de bord.
+          </p>
+
+          <h3 style={L.h3}>6. Cookies</h3>
+          <p style={L.p}>
+            Économio utilise uniquement des cookies techniques nécessaires au fonctionnement du site et des cookies de mesure d'audience anonymisés (Vercel Analytics). Aucun cookie publicitaire ou de tracking tiers n'est utilisé.
+          </p>
+
+          <h3 style={L.h3}>7. Vos droits (RGPD)</h3>
+          <p style={L.p}>
+            Conformément au Règlement Général sur la Protection des Données (RGPD), vous disposez des droits suivants :
+          </p>
+          <ul style={L.ul}>
+            <li>Droit d'accès à vos données</li>
+            <li>Droit de rectification</li>
+            <li>Droit à l'effacement</li>
+            <li>Droit à la portabilité</li>
+            <li>Droit d'opposition</li>
+            <li>Droit d'introduire une réclamation auprès de la CNIL (www.cnil.fr)</li>
+          </ul>
+          <p style={L.p}>
+            Pour exercer vos droits, contactez-nous à : <strong>[TON EMAIL]</strong>
+          </p>
+
+          <h3 style={L.h3}>8. Sécurité</h3>
+          <p style={L.p}>
+            Les communications avec notre site sont chiffrées (HTTPS). Les données transmises à notre IA sont protégées et immédiatement supprimées après analyse.
+          </p>
+        </>
+      ),
+    },
+    cgu: {
+      title: "Conditions Générales d'Utilisation",
+      icon: "📋",
+      body: (
+        <>
+          <h3 style={L.h3}>1. Objet</h3>
+          <p style={L.p}>
+            Les présentes Conditions Générales d'Utilisation (CGU) ont pour objet de définir les modalités et conditions dans lesquelles l'utilisateur peut accéder et utiliser le site Économio, accessible à l'adresse <strong>https://economio.vercel.app</strong>.
+          </p>
+
+          <h3 style={L.h3}>2. Acceptation des CGU</h3>
+          <p style={L.p}>
+            L'utilisation du site implique l'acceptation pleine et entière des présentes CGU. Si vous n'acceptez pas ces conditions, vous êtes invité à ne pas utiliser le service.
+          </p>
+
+          <h3 style={L.h3}>3. Description du service</h3>
+          <p style={L.p}>
+            Économio est un service gratuit de comparaison d'offres en ligne (téléphonie mobile, énergie, internet, assurances) destiné aux particuliers résidant en France. L'analyse est effectuée par intelligence artificielle. Le service redirige l'utilisateur vers les sites des fournisseurs partenaires via des liens d'affiliation.
+          </p>
+
+          <h3 style={L.h3}>4. Conditions d'accès</h3>
+          <p style={L.p}>
+            Le service est accessible 24h/24, 7j/7, sauf en cas de force majeure ou de maintenance. Économio se réserve le droit d'interrompre temporairement le service pour mise à jour ou maintenance, sans engagement de sa responsabilité.
+          </p>
+
+          <h3 style={L.h3}>5. Obligations de l'utilisateur</h3>
+          <p style={L.p}>
+            En utilisant Économio, l'utilisateur s'engage à :
+          </p>
+          <ul style={L.ul}>
+            <li>Fournir des informations exactes lors du remplissage des formulaires</li>
+            <li>Ne pas utiliser le service à des fins frauduleuses</li>
+            <li>Ne pas tenter de pirater, copier ou détourner le service</li>
+            <li>Respecter la propriété intellectuelle d'Économio</li>
+          </ul>
+
+          <h3 style={L.h3}>6. Limitations de responsabilité</h3>
+          <p style={L.p}>
+            Économio fournit des recommandations à titre indicatif. Les offres présentées peuvent évoluer. L'utilisateur reste seul responsable de la décision finale de souscription. Économio ne peut être tenu responsable :
+          </p>
+          <ul style={L.ul}>
+            <li>De la qualité des services fournis par les opérateurs partenaires</li>
+            <li>Des litiges éventuels entre l'utilisateur et un opérateur</li>
+            <li>Des informations inexactes fournies par l'utilisateur</li>
+            <li>D'une indisponibilité temporaire du service</li>
+          </ul>
+
+          <h3 style={L.h3}>7. Liens d'affiliation</h3>
+          <p style={L.p}>
+            L'utilisateur est informé que Économio perçoit des commissions d'affiliation lorsqu'il souscrit à une offre via les liens présents sur le site. Ces commissions n'impactent pas le prix payé par l'utilisateur et ne biaisent pas les recommandations : les meilleures offres sont mises en avant, indépendamment de leur taux de commission.
+          </p>
+
+          <h3 style={L.h3}>8. Propriété intellectuelle</h3>
+          <p style={L.p}>
+            Le contenu, le design, les logos et l'algorithme d'Économio sont protégés par le droit d'auteur. Toute reproduction est interdite sans autorisation écrite préalable.
+          </p>
+
+          <h3 style={L.h3}>9. Modification des CGU</h3>
+          <p style={L.p}>
+            Économio se réserve le droit de modifier les présentes CGU à tout moment. Les nouvelles conditions s'appliquent dès leur publication sur le site.
+          </p>
+
+          <h3 style={L.h3}>10. Droit applicable et juridiction</h3>
+          <p style={L.p}>
+            Les présentes CGU sont régies par le droit français. En cas de litige, et après tentative de résolution amiable, les tribunaux français seront seuls compétents.
+          </p>
+
+          <h3 style={L.h3}>11. Contact</h3>
+          <p style={L.p}>
+            Pour toute question relative aux CGU : <strong>[TON EMAIL]</strong>
+          </p>
+        </>
+      ),
+    },
+  };
+
+  const cur = content[page];
+
+  return (
+    <div style={O.overlay} onClick={onClose}>
+      <div style={{ ...O.modal, maxWidth: 720, maxHeight: "88vh", overflowY: "auto" }} onClick={e => e.stopPropagation()}>
+        <div style={O.mHeader}>
+          <div>
+            <div style={O.tag}>{cur.icon} Information légale</div>
+            <h2 style={O.mTitle}>{cur.title}</h2>
+            <p style={O.mSub}>Dernière mise à jour : {new Date().toLocaleDateString("fr-FR")}</p>
+          </div>
+          <button style={O.closeBtn} onClick={onClose}>✕</button>
+        </div>
+
+        <div style={L.content}>
+          {cur.body}
+        </div>
+
+        <button style={L.backBtn} onClick={onClose}>← Retour au site</button>
+      </div>
+    </div>
+  );
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// 🍪 COOKIES BANNER
+// ═══════════════════════════════════════════════════════════════════════════════
+function CookiesBanner({ onAccept, onDecline, onShowPrivacy }) {
+  return (
+    <div style={CK.banner}>
+      <div style={CK.inner}>
+        <div style={CK.icon}>🍪</div>
+        <div style={CK.textBlock}>
+          <div style={CK.title}>On utilise quelques cookies !</div>
+          <div style={CK.text}>
+            Économio utilise uniquement des cookies techniques et de mesure d'audience <strong>anonyme</strong> pour améliorer ton expérience.
+            Aucune publicité, aucun tracking tiers.{" "}
+            <button style={CK.link} onClick={onShowPrivacy}>En savoir plus</button>
+          </div>
+        </div>
+        <div style={CK.btns}>
+          <button style={CK.declineBtn} onClick={onDecline}>Refuser</button>
+          <button style={CK.acceptBtn} onClick={onAccept}>Tout accepter</button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
 // 🎉 CONFETTI ANIMATION (version spectaculaire)
 // ═══════════════════════════════════════════════════════════════════════════════
 function Confetti() {
@@ -575,6 +833,8 @@ export default function EconomioApp() {
   const [uploadStage, setUploadStage] = useState("");
   const [showUploadSuccess, setShowUploadSuccess] = useState(false);
   const [showConfetti, setShowConfetti] = useState(false);
+  const [legalPage, setLegalPage]   = useState(null); // null | "mentions" | "privacy" | "cgu"
+  const [showCookies, setShowCookies] = useState(false);
 
   const cat    = category ? CATEGORY_LABELS[category] : null;
   const fields = category ? CATEGORY_FORMS[category] : [];
@@ -585,6 +845,11 @@ export default function EconomioApp() {
       const data = localStorage.getItem(STORAGE_KEY);
       if (data) setSavedSavings(JSON.parse(data));
     } catch {}
+    // Check cookie consent
+    try {
+      const consent = localStorage.getItem("economio_cookies_consent");
+      if (!consent) setShowCookies(true);
+    } catch { setShowCookies(true); }
   }, []);
 
   // Scroll detection for header
@@ -706,6 +971,16 @@ Si tu ne trouves pas une info, mets null.`
     try { localStorage.removeItem(STORAGE_KEY); } catch {}
   };
 
+  const acceptCookies = () => {
+    setShowCookies(false);
+    try { localStorage.setItem("economio_cookies_consent", "accepted"); } catch {}
+  };
+
+  const declineCookies = () => {
+    setShowCookies(false);
+    try { localStorage.setItem("economio_cookies_consent", "declined"); } catch {}
+  };
+
   const analyze = async () => {
     setStep("analyzing"); setLoadStep(0);
     const t1 = setTimeout(() => setLoadStep(1), 1200);
@@ -770,6 +1045,18 @@ Réponds UNIQUEMENT en JSON strict, sans markdown, sans backticks :
 
       {/* Confetti animation */}
       {showConfetti && <Confetti />}
+
+      {/* Legal modal */}
+      <LegalModal page={legalPage} onClose={() => setLegalPage(null)} />
+
+      {/* Cookies banner */}
+      {showCookies && (
+        <CookiesBanner
+          onAccept={acceptCookies}
+          onDecline={declineCookies}
+          onShowPrivacy={() => { acceptCookies(); setLegalPage("privacy"); }}
+        />
+      )}
 
       {/* Floating WhatsApp */}
       <a
@@ -953,13 +1240,25 @@ Réponds UNIQUEMENT en JSON strict, sans markdown, sans backticks :
 
             {/* FOOTER */}
             <footer style={S.footer}>
-              <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 8, marginBottom: 16 }}>
                 <div style={S.logoMark}>⚡</div>
-                <span style={{ fontWeight: 700 }}>Économio</span>
+                <span style={{ fontWeight: 700, fontSize: 18 }}>Économio</span>
               </div>
-              <p style={{ fontSize: 12, color: "#4B5673", marginTop: 12, lineHeight: 1.6 }}>
-                © 2025 Économio · Service indépendant · Aucun lien commercial avec les fournisseurs cités<br />
-                Économio perçoit une commission d'affiliation sur les souscriptions, sans impact sur les prix.
+
+              <div style={S.footerLinks}>
+                <button style={S.footerLink} onClick={() => setLegalPage("mentions")}>📜 Mentions légales</button>
+                <span style={S.footerSep}>·</span>
+                <button style={S.footerLink} onClick={() => setLegalPage("privacy")}>🔒 Confidentialité</button>
+                <span style={S.footerSep}>·</span>
+                <button style={S.footerLink} onClick={() => setLegalPage("cgu")}>📋 CGU</button>
+                <span style={S.footerSep}>·</span>
+                <button style={S.footerLink} onClick={() => { setShowCookies(true); }}>🍪 Cookies</button>
+              </div>
+
+              <p style={{ fontSize: 12, color: "#4B5673", marginTop: 18, lineHeight: 1.6 }}>
+                © 2026 Économio · Service indépendant · Aucun lien commercial avec les fournisseurs cités<br />
+                Économio perçoit une commission d'affiliation sur les souscriptions, sans impact sur les prix.<br />
+                Service édité par un auto-entrepreneur français.
               </p>
             </footer>
           </>
@@ -1049,8 +1348,8 @@ Réponds UNIQUEMENT en JSON strict, sans markdown, sans backticks :
             <div style={S.fieldsGrid} className="form-fields-grid">
               {fields.map(f => {
                 const currentValue = formData[f.key] || "";
-                const isCustom = f.type === "select" && currentValue.startsWith("__custom__");
-                const customValue = isCustom ? currentValue.replace("__custom__", "") : "";
+                const isCustom = f.type === "select" && typeof currentValue === "string" && currentValue.startsWith("__custom__");
+                const customValue = isCustom ? currentValue.substring("__custom__".length) : "";
 
                 return (
                   <div key={f.key} style={S.fieldGroup}>
@@ -1074,11 +1373,15 @@ Réponds UNIQUEMENT en JSON strict, sans markdown, sans backticks :
                         </select>
                         {isCustom && (
                           <input
+                            key={`custom-${f.key}`}
                             type="text"
-                            style={{ ...S.input, marginTop: 8, paddingRight: 14 }}
-                            placeholder="Saisis ta valeur ici..."
+                            style={S.customInput}
+                            placeholder="✍️ Saisis ta valeur ici..."
                             value={customValue}
-                            onChange={e => setField(f.key, "__custom__" + e.target.value)}
+                            onChange={e => {
+                              const newVal = e.target.value;
+                              setField(f.key, "__custom__" + newVal);
+                            }}
                             autoFocus
                           />
                         )}
@@ -1298,7 +1601,10 @@ const S = {
   finalCTA:    { textAlign: "center", padding: "80px 20px", background: "linear-gradient(135deg, rgba(0,200,255,0.08), rgba(0,229,199,0.08))", border: "1px solid rgba(0,200,255,0.2)", borderRadius: 24, margin: "60px 0 40px" },
 
   // Footer
-  footer:      { textAlign: "center", padding: "40px 0", borderTop: "1px solid rgba(255,255,255,0.05)", marginTop: 40 },
+  footer:      { textAlign: "center", padding: "40px 20px", borderTop: "1px solid rgba(255,255,255,0.05)", marginTop: 40 },
+  footerLinks: { display: "flex", flexWrap: "wrap", alignItems: "center", justifyContent: "center", gap: 8 },
+  footerLink:  { background: "transparent", border: "none", color: "#94A3C7", fontSize: 13, cursor: "pointer", padding: "4px 8px", fontFamily: "inherit", transition: "color .2s" },
+  footerSep:   { color: "#374151", fontSize: 13 },
 
   // Form
   formWrap:    { maxWidth: 620, margin: "0 auto", padding: "32px 16px", animation: "fadeUp .5s ease", display: "flex", flexDirection: "column", alignItems: "stretch" },
@@ -1351,6 +1657,7 @@ const S = {
   fieldLabel:  { fontSize: 12, fontWeight: 600, color: "#94A3C7", textTransform: "uppercase", letterSpacing: 0.5 },
   select:      { width: "100%", background: "#0F1426", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 10, padding: "12px 14px", color: "#E8F1FF", fontSize: 14, outline: "none", cursor: "pointer", boxSizing: "border-box", fontFamily: "inherit" },
   input:       { width: "100%", background: "#0F1426", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 10, padding: "12px 60px 12px 14px", color: "#E8F1FF", fontSize: 14, outline: "none", boxSizing: "border-box" },
+  customInput: { width: "100%", background: "#0F1426", border: "1px solid rgba(0,200,255,0.4)", borderRadius: 10, padding: "12px 14px", color: "#E8F1FF", fontSize: 14, outline: "none", boxSizing: "border-box", marginTop: 8, fontFamily: "inherit", boxShadow: "0 0 0 2px rgba(0,200,255,0.1)" },
   suffix:      { position: "absolute", right: 14, top: "50%", transform: "translateY(-50%)", fontSize: 13, color: "#6B7B9C", pointerEvents: "none" },
   analyzeBtn:  { width: "100%", color: "#050810", border: "none", borderRadius: 14, padding: "17px", fontSize: 17, fontWeight: 900, marginTop: 8, transition: "transform .25s cubic-bezier(0.4,0,0.2,1)", letterSpacing: "-0.3px", boxSizing: "border-box", cursor: "pointer", fontFamily: "inherit" },
 
@@ -1427,4 +1734,27 @@ const D = {
   list:        { display: "flex", flexDirection: "column", gap: 10, marginBottom: 16 },
   item:        { display: "flex", alignItems: "center", gap: 14, background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 12, padding: "12px 14px" },
   clearBtn:    { width: "100%", background: "rgba(255,86,112,0.08)", border: "1px solid rgba(255,86,112,0.2)", color: "#FF8FA0", borderRadius: 10, padding: "12px", cursor: "pointer", fontSize: 13, fontWeight: 600 },
+};
+
+// ⚖️ Legal modal styles
+const L = {
+  content:  { color: "#C5D2EC", lineHeight: 1.7, fontSize: 14, marginBottom: 24 },
+  h3:       { fontSize: 15, fontWeight: 700, color: "#7BE5FF", marginTop: 22, marginBottom: 8 },
+  p:        { fontSize: 14, color: "#C5D2EC", lineHeight: 1.7, marginBottom: 10 },
+  ul:       { paddingLeft: 24, marginBottom: 10, color: "#C5D2EC", fontSize: 14, lineHeight: 1.8 },
+  backBtn:  { width: "100%", background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)", color: "#E8F1FF", borderRadius: 12, padding: "14px", fontSize: 15, fontWeight: 600, cursor: "pointer", fontFamily: "inherit", marginTop: 14 },
+};
+
+// 🍪 Cookies banner styles
+const CK = {
+  banner:     { position: "fixed", bottom: 0, left: 0, right: 0, zIndex: 998, background: "rgba(10, 16, 36, 0.96)", backdropFilter: "blur(12px)", borderTop: "1px solid rgba(0,200,255,0.2)", padding: "16px 20px", boxShadow: "0 -8px 32px rgba(0,0,0,0.6)", animation: "fadeUp .4s ease" },
+  inner:      { maxWidth: 1100, margin: "0 auto", display: "flex", alignItems: "center", gap: 16, flexWrap: "wrap" },
+  icon:       { fontSize: 32, flexShrink: 0 },
+  textBlock:  { flex: 1, minWidth: 240 },
+  title:      { fontSize: 15, fontWeight: 700, color: "#FFF", marginBottom: 4 },
+  text:       { fontSize: 13, color: "#94A3C7", lineHeight: 1.5 },
+  link:       { background: "transparent", border: "none", color: "#7BE5FF", cursor: "pointer", textDecoration: "underline", fontFamily: "inherit", fontSize: 13, padding: 0 },
+  btns:       { display: "flex", gap: 8, flexShrink: 0 },
+  declineBtn: { background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.15)", color: "#94A3C7", borderRadius: 10, padding: "10px 18px", cursor: "pointer", fontFamily: "inherit", fontSize: 13, fontWeight: 600 },
+  acceptBtn:  { background: "linear-gradient(135deg,#00C8FF,#00E5C7)", border: "none", color: "#050810", borderRadius: 10, padding: "10px 22px", cursor: "pointer", fontFamily: "inherit", fontSize: 13, fontWeight: 800 },
 };
