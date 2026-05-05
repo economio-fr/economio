@@ -408,7 +408,7 @@ function LegalModal({ page, onClose }) {
             Le site <strong>Économio</strong> est édité par :<br /><br />
             <strong>Bryan Le Roux</strong><br />
             Auto-entrepreneur<br />
-            Adresse : 1 Rue Geneviève de Gaulle Anthonioz56520 Guidel<br />
+            Adresse : 1 rue Geneviève de Gaulle Anthonioz, 56520 Guidel, France<br />
             Email : bryanleroux93@gmail.com<br />
             SIRET : 94940673000018<br />
             N° TVA : Non assujetti à la TVA – Article 293 B du CGI
@@ -455,7 +455,7 @@ function LegalModal({ page, onClose }) {
           <h3 style={L.h3}>1. Responsable du traitement</h3>
           <p style={L.p}>
             Le responsable du traitement des données personnelles est :<br />
-            <strong>Bryan le Roux</strong>, auto-entrepreneur<br />
+            <strong>Bryan Le Roux</strong>, auto-entrepreneur<br />
             Email : <strong>bryanleroux93@gmail.com</strong>
           </p>
 
@@ -514,7 +514,7 @@ function LegalModal({ page, onClose }) {
             <li>Droit d'introduire une réclamation auprès de la CNIL (www.cnil.fr)</li>
           </ul>
           <p style={L.p}>
-            Pour exercer vos droits, contactez-nous à : <strong>Bryanleroux93@gmail.com</strong>
+            Pour exercer vos droits, contactez-nous à : <strong>bryanleroux93@gmail.com</strong>
           </p>
 
           <h3 style={L.h3}>8. Sécurité</h3>
@@ -644,6 +644,96 @@ function CookiesBanner({ onAccept, onDecline, onShowPrivacy }) {
           <button style={CK.declineBtn} onClick={onDecline}>Refuser</button>
           <button style={CK.acceptBtn} onClick={onAccept}>Tout accepter</button>
         </div>
+      </div>
+    </div>
+  );
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// 📧 EMAIL POPUP (avant l'analyse)
+// ═══════════════════════════════════════════════════════════════════════════════
+function EmailPopup({ email, onEmailChange, onSubmit, onSkip, submitting, category }) {
+  const [touched, setTouched] = useState(false);
+  const isValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+
+  const handleSubmit = () => {
+    setTouched(true);
+    if (isValid) onSubmit();
+  };
+
+  return (
+    <div style={O.overlay} onClick={onSkip}>
+      <div style={{ ...O.modal, maxWidth: 460 }} onClick={e => e.stopPropagation()}>
+
+        {/* Big icon */}
+        <div style={EP.iconWrap}>
+          <div style={EP.iconBg} />
+          <div style={EP.iconEmoji}>📧</div>
+        </div>
+
+        <h2 style={EP.title}>Reçois ton rapport personnalisé</h2>
+        <p style={EP.subtitle}>
+          Sauvegarde tes économies sur <strong style={{ color: "#7BFFE5" }}>{category}</strong> et reçois nos meilleurs bons plans en exclusivité chaque semaine.
+        </p>
+
+        {/* Bullets */}
+        <div style={EP.bullets}>
+          <div style={EP.bullet}>
+            <span style={EP.bulletDot}>✓</span>
+            <span>Rapport détaillé envoyé par email</span>
+          </div>
+          <div style={EP.bullet}>
+            <span style={EP.bulletDot}>✓</span>
+            <span>Alerte quand un meilleur prix sort</span>
+          </div>
+          <div style={EP.bullet}>
+            <span style={EP.bulletDot}>✓</span>
+            <span>Désinscription en 1 clic, sans spam</span>
+          </div>
+        </div>
+
+        {/* Email input */}
+        <div style={{ marginTop: 20 }}>
+          <input
+            type="email"
+            placeholder="ton.email@exemple.com"
+            value={email}
+            onChange={e => onEmailChange(e.target.value)}
+            style={{
+              ...EP.input,
+              borderColor: touched && !isValid ? "#FF5670" : "rgba(0,200,255,0.3)",
+            }}
+            onKeyDown={e => { if (e.key === "Enter") handleSubmit(); }}
+            disabled={submitting}
+            autoFocus
+          />
+          {touched && !isValid && (
+            <div style={{ fontSize: 12, color: "#FF8FA0", marginTop: 6 }}>
+              ⚠️ Email invalide
+            </div>
+          )}
+        </div>
+
+        {/* Buttons */}
+        <button
+          style={{
+            ...EP.submitBtn,
+            opacity: submitting ? 0.6 : 1,
+            cursor: submitting ? "wait" : "pointer",
+          }}
+          onClick={handleSubmit}
+          disabled={submitting}
+        >
+          {submitting ? "Envoi en cours..." : "🎁 Recevoir mon rapport"}
+        </button>
+
+        <button style={EP.skipBtn} onClick={onSkip} disabled={submitting}>
+          Non merci, voir les résultats sans email
+        </button>
+
+        <p style={EP.legal}>
+          🔒 Tes données sont protégées. Désinscription en 1 clic.
+        </p>
       </div>
     </div>
   );
@@ -835,6 +925,10 @@ export default function EconomioApp() {
   const [showConfetti, setShowConfetti] = useState(false);
   const [legalPage, setLegalPage]   = useState(null); // null | "mentions" | "privacy" | "cgu"
   const [showCookies, setShowCookies] = useState(false);
+  const [showEmailPopup, setShowEmailPopup] = useState(false);
+  const [emailValue, setEmailValue] = useState("");
+  const [emailSubmitting, setEmailSubmitting] = useState(false);
+  const [emailDone, setEmailDone] = useState(false);
 
   const cat    = category ? CATEGORY_LABELS[category] : null;
   const fields = category ? CATEGORY_FORMS[category] : [];
@@ -981,6 +1075,44 @@ Si tu ne trouves pas une info, mets null.`
     try { localStorage.setItem("economio_cookies_consent", "declined"); } catch {}
   };
 
+  // Open email popup before analysis (or skip if already submitted)
+  const requestAnalysis = () => {
+    if (emailDone) {
+      // Already submitted email, go straight to analysis
+      analyze();
+    } else {
+      setShowEmailPopup(true);
+    }
+  };
+
+  // Submit email to MailerLite
+  const submitEmail = async (skip = false) => {
+    setShowEmailPopup(false);
+    if (skip || !emailValue) {
+      // User skipped, go to analysis directly
+      analyze();
+      return;
+    }
+
+    setEmailSubmitting(true);
+    try {
+      await fetch("/api/subscribe", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: emailValue,
+          category: cat?.label || "",
+        }),
+      });
+      setEmailDone(true);
+    } catch (e) {
+      console.error("Email submit failed:", e);
+      // Don't block the user, continue to analysis
+    }
+    setEmailSubmitting(false);
+    analyze();
+  };
+
   const analyze = async () => {
     setStep("analyzing"); setLoadStep(0);
     const t1 = setTimeout(() => setLoadStep(1), 1200);
@@ -1055,6 +1187,18 @@ Réponds UNIQUEMENT en JSON strict, sans markdown, sans backticks :
           onAccept={acceptCookies}
           onDecline={declineCookies}
           onShowPrivacy={() => { acceptCookies(); setLegalPage("privacy"); }}
+        />
+      )}
+
+      {/* Email capture popup */}
+      {showEmailPopup && cat && (
+        <EmailPopup
+          email={emailValue}
+          onEmailChange={setEmailValue}
+          onSubmit={() => submitEmail(false)}
+          onSkip={() => submitEmail(true)}
+          submitting={emailSubmitting}
+          category={cat?.label || ''}
         />
       )}
 
@@ -1415,7 +1559,7 @@ Réponds UNIQUEMENT en JSON strict, sans markdown, sans backticks :
                 animation: formValid() ? "glowPulse 2s ease-in-out infinite, bounce 2s ease-in-out infinite" : "none",
               }}
               disabled={!formValid()}
-              onClick={analyze}
+              onClick={requestAnalysis}
               onMouseEnter={e => { if (formValid()) { e.currentTarget.style.transform = "scale(1.02)"; } }}
               onMouseLeave={e => { if (formValid()) { e.currentTarget.style.transform = "scale(1)"; } }}
             >
@@ -1757,4 +1901,20 @@ const CK = {
   btns:       { display: "flex", gap: 8, flexShrink: 0 },
   declineBtn: { background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.15)", color: "#94A3C7", borderRadius: 10, padding: "10px 18px", cursor: "pointer", fontFamily: "inherit", fontSize: 13, fontWeight: 600 },
   acceptBtn:  { background: "linear-gradient(135deg,#00C8FF,#00E5C7)", border: "none", color: "#050810", borderRadius: 10, padding: "10px 22px", cursor: "pointer", fontFamily: "inherit", fontSize: 13, fontWeight: 800 },
+};
+
+// 📧 Email popup styles
+const EP = {
+  iconWrap:  { position: "relative", display: "flex", justifyContent: "center", alignItems: "center", width: 80, height: 80, margin: "0 auto 18px" },
+  iconBg:    { position: "absolute", inset: 0, borderRadius: "50%", background: "linear-gradient(135deg,rgba(0,200,255,0.3),rgba(0,229,199,0.2))", filter: "blur(20px)" },
+  iconEmoji: { position: "relative", fontSize: 56, animation: "float 3s ease-in-out infinite" },
+  title:     { fontFamily: "'Cabinet Grotesk',sans-serif", fontSize: 24, fontWeight: 900, textAlign: "center", letterSpacing: "-0.5px", color: "#E8F1FF", marginBottom: 10 },
+  subtitle:  { fontSize: 14, color: "#94A3C7", textAlign: "center", lineHeight: 1.5, marginBottom: 18 },
+  bullets:   { background: "rgba(0,200,255,0.05)", border: "1px solid rgba(0,200,255,0.15)", borderRadius: 12, padding: "14px 16px" },
+  bullet:    { display: "flex", alignItems: "center", gap: 10, fontSize: 13, color: "#C5D2EC", padding: "5px 0" },
+  bulletDot: { width: 22, height: 22, borderRadius: "50%", background: "linear-gradient(135deg,#00C8FF,#00E5C7)", color: "#050810", fontSize: 13, fontWeight: 800, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 },
+  input:     { width: "100%", background: "#0F1426", border: "1px solid rgba(0,200,255,0.3)", borderRadius: 12, padding: "14px 16px", color: "#E8F1FF", fontSize: 15, outline: "none", boxSizing: "border-box", fontFamily: "inherit", transition: "border-color .2s" },
+  submitBtn: { width: "100%", marginTop: 12, background: "linear-gradient(135deg,#00C8FF,#00E5C7)", color: "#050810", border: "none", borderRadius: 12, padding: "15px", fontSize: 16, fontWeight: 800, cursor: "pointer", fontFamily: "inherit", letterSpacing: "-0.2px", boxShadow: "0 8px 24px rgba(0,200,255,0.3)", transition: "transform .2s" },
+  skipBtn:   { width: "100%", marginTop: 8, background: "transparent", color: "#94A3C7", border: "none", padding: "10px", fontSize: 13, cursor: "pointer", fontFamily: "inherit", textDecoration: "underline" },
+  legal:     { fontSize: 11, color: "#4B5673", textAlign: "center", marginTop: 12, lineHeight: 1.5 },
 };
