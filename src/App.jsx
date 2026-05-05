@@ -406,11 +406,11 @@ function LegalModal({ page, onClose }) {
           <h3 style={L.h3}>1. Éditeur du site</h3>
           <p style={L.p}>
             Le site <strong>Économio</strong> est édité par :<br /><br />
-            <strong>[TON PRÉNOM NOM]</strong><br />
+            <strong>Bryan Le Roux</strong><br />
             Auto-entrepreneur<br />
-            Adresse : [TON ADRESSE COMPLÈTE]<br />
-            Email : [TON EMAIL]<br />
-            SIRET : [TON NUMÉRO SIRET]<br />
+            Adresse : 1 Rue Geneviève de Gaulle Anthonioz56520 Guidel<br />
+            Email : bryanleroux93@gmail.com<br />
+            SIRET : 94940673000018<br />
             N° TVA : Non assujetti à la TVA – Article 293 B du CGI
           </p>
 
@@ -442,7 +442,7 @@ function LegalModal({ page, onClose }) {
 
           <h3 style={L.h3}>7. Contact</h3>
           <p style={L.p}>
-            Pour toute question relative à ces mentions légales, vous pouvez nous contacter à : <strong>[TON EMAIL]</strong>
+            Pour toute question relative à ces mentions légales, vous pouvez nous contacter à : <strong>bryanleroux93@gmail.com</strong>
           </p>
         </>
       ),
@@ -455,8 +455,8 @@ function LegalModal({ page, onClose }) {
           <h3 style={L.h3}>1. Responsable du traitement</h3>
           <p style={L.p}>
             Le responsable du traitement des données personnelles est :<br />
-            <strong>[TON PRÉNOM NOM]</strong>, auto-entrepreneur<br />
-            Email : <strong>[TON EMAIL]</strong>
+            <strong>Bryan le Roux</strong>, auto-entrepreneur<br />
+            Email : <strong>bryanleroux93@gmail.com</strong>
           </p>
 
           <h3 style={L.h3}>2. Données collectées</h3>
@@ -593,7 +593,7 @@ function LegalModal({ page, onClose }) {
 
           <h3 style={L.h3}>11. Contact</h3>
           <p style={L.p}>
-            Pour toute question relative aux CGU : <strong>[TON EMAIL]</strong>
+            Pour toute question relative aux CGU : <strong>bryanleroux93@gmail.com</strong>
           </p>
         </>
       ),
