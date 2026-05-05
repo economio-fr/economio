@@ -415,7 +415,7 @@ function LegalModal({ page, onClose }) {
           </p>
 
           <h3 style={L.h3}>2. Directeur de la publication</h3>
-          <p style={L.p}>[TON PRÉNOM NOM]</p>
+          <p style={L.p}>Bryan Le Roux</p>
 
           <h3 style={L.h3}>3. Hébergement du site</h3>
           <p style={L.p}>
@@ -514,7 +514,7 @@ function LegalModal({ page, onClose }) {
             <li>Droit d'introduire une réclamation auprès de la CNIL (www.cnil.fr)</li>
           </ul>
           <p style={L.p}>
-            Pour exercer vos droits, contactez-nous à : <strong>[TON EMAIL]</strong>
+            Pour exercer vos droits, contactez-nous à : <strong>Bryanleroux93@gmail.com</strong>
           </p>
 
           <h3 style={L.h3}>8. Sécurité</h3>
