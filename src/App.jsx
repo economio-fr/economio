@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import { track } from "@vercel/analytics";
 
 // ═══════════════════════════════════════════════════════════════════════════════
 // CONFIG
@@ -17,44 +18,91 @@ const WHATSAPP_NUMBER = "33600000000";
 //
 // Si une clé n'est pas remplie, on utilise l'URL par défaut renvoyée par l'IA.
 // ═══════════════════════════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════════════════════════════
+// 🔗 LIENS D'AFFILIATION
+// ═══════════════════════════════════════════════════════════════════════════════
+// Chaque entrée a 2 niveaux :
+// - "affiliate"  : lien d'affiliation (à coller quand validé sur Awin/Effinity)
+// - "direct"     : lien direct vers la page forfaits (utilisé en attendant)
+//
+// Quand tu reçois ton lien d'affiliation, remplace juste la chaîne "affiliate"
+// ═══════════════════════════════════════════════════════════════════════════════
+
 const AFFILIATE_LINKS = {
-  // Mobile
-  "Free Mobile":      "", // ex: "https://www.awin1.com/cread.php?awinmid=...&awinaffid=TON-ID"
-  "Bouygues":         "",
-  "SFR":              "",
-  "RED by SFR":       "",
-  "Sosh":             "",
-  "Orange":           "",
-  "NRJ Mobile":       "",
-  "Lebara":           "",
-  // Internet
-  "Free":             "",
-  // Énergie
-  "EDF":              "",
-  "Engie":            "",
-  "TotalEnergies":    "",
-  "Vattenfall":       "",
-  "Ekwateur":         "",
-  "Ilek":             "",
-  // Assurances
-  "AXA":              "",
-  "Maif":             "",
-  "Macif":            "",
-  "Allianz":          "",
-  "MMA":              "",
-  "Groupama":         "",
-  "Luko":             "",
-  "April":            "",
-  "Direct Assurance": "",
-  "Leocare":          "",
+  // 📱 Mobile
+  "Free Mobile":      { affiliate: "", direct: "https://mobile.free.fr/" },
+  "Bouygues":         { affiliate: "", direct: "https://www.bouyguestelecom.fr/forfaits-mobiles" },
+  "Bouygues Telecom": { affiliate: "", direct: "https://www.bouyguestelecom.fr/forfaits-mobiles" },
+  "SFR":              { affiliate: "", direct: "https://www.sfr.fr/offre-mobile/forfait-mobile.html" },
+  "RED by SFR":       { affiliate: "", direct: "https://www.red-by-sfr.fr/forfaits-mobile/" },
+  "RED":              { affiliate: "", direct: "https://www.red-by-sfr.fr/forfaits-mobile/" },
+  "Sosh":             { affiliate: "", direct: "https://www.sosh.fr/forfaits-mobiles" },
+  "Orange":           { affiliate: "", direct: "https://www.orange.fr/portail" },
+  "NRJ Mobile":       { affiliate: "", direct: "https://www.nrjmobile.fr/" },
+  "Lebara":           { affiliate: "", direct: "https://www.lebara.fr/" },
+  "Prixtel":          { affiliate: "", direct: "https://www.prixtel.com/" },
+  "Cdiscount Mobile": { affiliate: "", direct: "https://www.cdiscount-mobile.com/" },
+  "YouPrice":         { affiliate: "", direct: "https://youprice.fr/" },
+  "Auchan Telecom":   { affiliate: "", direct: "https://www.auchantelecom.fr/" },
+
+  // 🌐 Internet / Box
+  "Free":             { affiliate: "", direct: "https://www.free.fr/freebox/" },
+  "Freebox":          { affiliate: "", direct: "https://www.free.fr/freebox/" },
+  "Bouygues Box":     { affiliate: "", direct: "https://www.bouyguestelecom.fr/offres-internet" },
+  "SFR Box":          { affiliate: "", direct: "https://www.sfr.fr/offre-internet/" },
+  "Orange Box":       { affiliate: "", direct: "https://boutique.orange.fr/internet/offres-fibre" },
+  "Livebox":          { affiliate: "", direct: "https://boutique.orange.fr/internet/offres-fibre" },
+
+  // ⚡ Énergie
+  "EDF":              { affiliate: "", direct: "https://particulier.edf.fr/fr/accueil/electricite-gaz/offre-electricite.html" },
+  "Engie":            { affiliate: "", direct: "https://particuliers.engie.fr/electricite-gaz/contrat-electricite.html" },
+  "TotalEnergies":    { affiliate: "", direct: "https://www.totalenergies.fr/clients/particuliers/electricite/offre-verte-electricite-fixe" },
+  "Total":            { affiliate: "", direct: "https://www.totalenergies.fr/clients/particuliers/electricite/offre-verte-electricite-fixe" },
+  "Vattenfall":       { affiliate: "", direct: "https://www.vattenfall.fr/electricite-gaz/offre-electricite/" },
+  "Ekwateur":         { affiliate: "", direct: "https://ekwateur.fr/" },
+  "Ilek":             { affiliate: "", direct: "https://www.ilek.fr/" },
+  "OHM Énergie":      { affiliate: "", direct: "https://ohm-energie.com/" },
+  "Mint Énergie":     { affiliate: "", direct: "https://www.mint-energie.com/" },
+  "Alpiq":            { affiliate: "", direct: "https://www.alpiq.fr/" },
+  "Octopus Energy":   { affiliate: "", direct: "https://octopusenergy.fr/" },
+
+  // 🏠 Assurances habitation
+  "AXA":              { affiliate: "", direct: "https://www.axa.fr/assurance-habitation.html" },
+  "Maif":             { affiliate: "", direct: "https://www.maif.fr/assurance-habitation" },
+  "Macif":            { affiliate: "", direct: "https://www.macif.fr/assurance/particuliers/habitation" },
+  "Allianz":          { affiliate: "", direct: "https://www.allianz.fr/assurance-habitation/" },
+  "MMA":              { affiliate: "", direct: "https://www.mma.fr/assurance-habitation.html" },
+  "Groupama":         { affiliate: "", direct: "https://www.groupama.fr/assurance-habitation/" },
+  "Luko":             { affiliate: "", direct: "https://www.luko.eu/fr/" },
+  "April":            { affiliate: "", direct: "https://www.april.fr/" },
+  "Matmut":           { affiliate: "", direct: "https://www.matmut.fr/assurance/habitation" },
+  "GMF":              { affiliate: "", direct: "https://www.gmf.fr/assurance-habitation" },
+
+  // 🚗 Assurances auto
+  "Direct Assurance": { affiliate: "", direct: "https://www.direct-assurance.fr/assurance-auto" },
+  "Leocare":          { affiliate: "", direct: "https://www.leocare.eu/" },
+  "Lovys":            { affiliate: "", direct: "https://www.lovys.com/" },
+  "Eurofil":          { affiliate: "", direct: "https://www.eurofil.com/" },
+  "L'olivier":        { affiliate: "", direct: "https://www.olivier-assurance.fr/" },
+  "Olivier Assurance":{ affiliate: "", direct: "https://www.olivier-assurance.fr/" },
 };
 
-// Helper: si on a un lien d'affiliation pour ce fournisseur, on l'utilise
+// Helper: récupère le lien le plus pertinent pour ce fournisseur
 const getAffiliateUrl = (providerName, fallbackUrl) => {
-  const matchKey = Object.keys(AFFILIATE_LINKS).find(
-    k => providerName?.toLowerCase().includes(k.toLowerCase())
-  );
-  return (matchKey && AFFILIATE_LINKS[matchKey]) || fallbackUrl || "#";
+  if (!providerName) return fallbackUrl || "#";
+
+  // Cherche la meilleure correspondance (la plus longue qui matche)
+  const candidates = Object.keys(AFFILIATE_LINKS)
+    .filter(k => providerName.toLowerCase().includes(k.toLowerCase()))
+    .sort((a, b) => b.length - a.length); // les plus longs en priorité
+
+  if (candidates.length > 0) {
+    const data = AFFILIATE_LINKS[candidates[0]];
+    // Priorité : 1) lien d'affiliation 2) lien direct officiel 3) fallback IA
+    return data.affiliate || data.direct || fallbackUrl || "#";
+  }
+
+  return fallbackUrl || "#";
 };
 
 const CATEGORY_LABELS = {
@@ -1089,7 +1137,8 @@ Si tu ne trouves pas une info, mets null.`
   const submitEmail = async (skip = false) => {
     setShowEmailPopup(false);
     if (skip || !emailValue) {
-      // User skipped, go to analysis directly
+      // 📊 Track skip event
+      try { track("email_skipped", { category: cat?.label || "unknown" }); } catch {}
       analyze();
       return;
     }
@@ -1105,15 +1154,19 @@ Si tu ne trouves pas une info, mets null.`
         }),
       });
       setEmailDone(true);
+      // 📊 Track email submission success
+      try { track("email_submitted", { category: cat?.label || "unknown" }); } catch {}
     } catch (e) {
       console.error("Email submit failed:", e);
-      // Don't block the user, continue to analysis
+      try { track("email_failed", { category: cat?.label || "unknown" }); } catch {}
     }
     setEmailSubmitting(false);
     analyze();
   };
 
   const analyze = async () => {
+    // 📊 Track event
+    try { track("analysis_started", { category: cat?.label || "unknown" }); } catch {}
     setStep("analyzing"); setLoadStep(0);
     const t1 = setTimeout(() => setLoadStep(1), 1200);
     const t2 = setTimeout(() => setLoadStep(2), 2600);
@@ -1292,7 +1345,7 @@ Réponds UNIQUEMENT en JSON strict, sans markdown, sans backticks :
                       e.currentTarget.style.transform = "translateY(0) scale(1)";
                       e.currentTarget.style.boxShadow = "none";
                     }}
-                    onClick={() => { setCategory(key); setStep("form"); window.scrollTo({ top: 0, behavior: "smooth" }); }}
+                    onClick={() => { try { track("category_selected", { category: val.label }); } catch {} setCategory(key); setStep("form"); window.scrollTo({ top: 0, behavior: "smooth" }); }}
                   >
                     <span style={{ ...S.catIconBox, background: `${val.color}22`, color: val.color }}>{val.icon}</span>
                     <span style={{ flex: 1, fontWeight: 600, fontSize: 15 }}>{val.label}</span>
@@ -1640,6 +1693,7 @@ Réponds UNIQUEMENT en JSON strict, sans markdown, sans backticks :
                       </div>
                       <div style={{ display: "flex", gap: 8 }}>
                         <a href={getAffiliateUrl(offer.provider, offer.url)} target="_blank" rel="noopener noreferrer"
+                          onClick={() => { try { track("offer_clicked", { provider: offer.provider || "unknown", rank: i + 1, category: cat?.label || "unknown" }); } catch {} }}
                           style={{ ...S.offerCTA, ...(i === 0 ? { background: "linear-gradient(135deg,#00C8FF,#00E5C7)", border: "none", color: "#0A0E1A" } : {}) }}>
                           Voir l'offre →
                         </a>
