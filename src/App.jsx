@@ -1,8 +1,13 @@
 import { useState, useEffect, useRef } from "react";
 
-// Safe Analytics tracking - fallback to window.va if track import fails
+// 📊 Safe Analytics tracking - sends events to Google Analytics 4 AND Vercel
 const track = (eventName, props) => {
   try {
+    // Google Analytics 4
+    if (typeof window !== "undefined" && typeof window.gtag === "function") {
+      window.gtag("event", eventName, props || {});
+    }
+    // Vercel Analytics (in case Pro plan is activated later)
     if (typeof window !== "undefined" && typeof window.va === "function") {
       window.va("event", { name: eventName, ...(props || {}) });
     }
