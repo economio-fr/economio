@@ -1,5 +1,15 @@
 import { useState, useEffect, useRef } from "react";
-import { track } from "@vercel/analytics";
+
+// Safe Analytics tracking - fallback to window.va if track import fails
+const track = (eventName, props) => {
+  try {
+    if (typeof window !== "undefined" && typeof window.va === "function") {
+      window.va("event", { name: eventName, ...(props || {}) });
+    }
+  } catch (e) {
+    // Silently fail - don't block user experience
+  }
+};
 
 // ═══════════════════════════════════════════════════════════════════════════════
 // CONFIG
